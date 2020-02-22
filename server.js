@@ -2,9 +2,11 @@ const app = require("express")();
 const server = require("http").Server(app);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const axios = require("axios");
 const { DATABASE_URL, PORT, CLIENT_ORIGIN } = require("./config");
 const bodyParser = require("body-parser");
+const { updateCountries } = require("./wfb-update-helpers");
+const { Country } = require("./models");
+
 require("dotenv").config();
 app.use(
   cors({
@@ -35,3 +37,16 @@ mongoose.connect(
     }
   }
 );
+
+app.get("/country/:name", (req, res) => {
+  console.log("RECIEVED", req.params.name);
+  Country.find({ name: req.params.name })
+    .then(result => {
+      res.json(result).end();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+// updateCountries();
