@@ -1,4 +1,6 @@
 const axios = require("axios");
+var _ = require("lodash");
+
 const { Country } = require("./models");
 
 exports.updateCountries = () => {
@@ -8,6 +10,12 @@ exports.updateCountries = () => {
     )
     .then(res => {
       logDataStats(res.data.countries);
+
+      countKey(
+        res.data.countries,
+        `data.communications.internet`
+      );
+
       for (let country in res.data.countries) {
         Country.findOneAndUpdate(
           { name: res.data.countries[country].data.name },
@@ -18,7 +26,7 @@ exports.updateCountries = () => {
           }
         )
           .then(() => {
-            console.log(`Saved ${res.data.countries[country].data.name} data`);
+            // console.log(`Saved ${res.data.countries[country].data.name} data`);
           })
           .catch(err => {
             console.log(`Error saving ${country} data`, err);
@@ -68,4 +76,18 @@ const mainKeys = [
 
 function keyExists(key) {
   return mainKeys.includes(key);
+}
+
+// used to help determine how often a nested key is present within the data of a country
+function countKey(countries, keyPath) {
+  let count = 0;
+  for (let country in countries) {
+    if (_.get(countries[country], keyPath)) {
+      count++;
+    }
+    else{
+      // console.log(country)
+    }
+  }
+  console.log(`${keyPath} - ${((count / 252) * 100).toFixed(2)}`);
 }
