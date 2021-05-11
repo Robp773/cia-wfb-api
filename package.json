@@ -15,7 +15,7 @@
     "cors": "*",
     "dotenv": "^8.2.0",
     "express": "*",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mongoose": "*",
     "nodemon": "^2.0.2"
   }
